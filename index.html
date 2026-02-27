@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Visualizador de Escalas</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NSA5NSI++PC9zdmc+">
 <style>
   body {
     font-family: system-ui, sans-serif;
@@ -16,63 +17,110 @@
     padding: 2rem 0;
   }
 
-  h1 {
-    margin-bottom: 1rem;
-  }
-
-  .controls {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  select {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    background-color: #333;
-    color: #fff;
-    border: 1px solid #555;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  .scale-info-panel {
+  .dashboard {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    background-color: #2a2a2a;
-    padding: 1.5rem;
+    gap: 1.2rem;
+    width: 95%;
+    max-width: 1200px;
+    margin-bottom: 2.5rem;
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    background: #222;
+    padding: 1.2rem 1.5rem;
     border-radius: 8px;
-    margin-bottom: 2rem;
-    width: 90%;
-    max-width: 800px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.3);
   }
 
-  .info-header {
+  .toolbar-group {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #444;
-    padding-bottom: 10px;
-    margin-bottom: 5px;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
 
-  .info-title {
-    font-weight: bold;
+  #scale-title {
+    font-size: 1.4rem;
     color: #dcb98a;
-    font-size: 1.1rem;
+    margin: 0;
+    font-weight: bold;
+  }
+
+  select, input[type="number"], button {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.95rem;
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  input[type="number"] {
+    width: 70px;
+    cursor: text;
+  }
+
+  button {
+    background-color: #dcb98a;
+    color: #1a1a1a;
+    font-weight: bold;
+    border: none;
+    transition: background-color 0.2s, transform 0.1s;
+  }
+
+  button:hover {
+    background-color: #cda879;
+  }
+
+  button:active {
+    transform: scale(0.98);
+  }
+
+  .metro-btn {
+    background-color: #3498db;
+    color: white;
+  }
+
+  .metro-btn.active {
+    background-color: #e74c3c;
+  }
+
+  #custom-tuning-panel {
+    display: flex;
+    gap: 0.8rem;
+    background: #1a1a1a;
+    padding: 0.8rem 1.2rem;
+    border-radius: 6px;
+    border: 1px solid #444;
+    justify-content: center;
+  }
+
+  .custom-string-label {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #ccc;
+    gap: 0.4rem;
+  }
+
+  .custom-string-label select {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.85rem;
   }
 
   .toggle-group {
     display: flex;
     gap: 1rem;
     background: #1a1a1a;
-    padding: 5px 10px;
-    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
     font-size: 0.9rem;
   }
 
@@ -83,51 +131,102 @@
     gap: 0.4rem;
   }
 
+  .scale-info-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background-color: #2a2a2a;
+    padding: 1.5rem 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  }
+
+  .info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #444;
+    padding-bottom: 12px;
+    margin-bottom: 8px;
+  }
+
+  .info-title {
+    font-weight: bold;
+    color: #dcb98a;
+    font-size: 1.1rem;
+  }
+
+  .info-body {
+    display: flex;
+    gap: 2rem;
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .info-grid {
+    flex: 2;
+    min-width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
   .info-row {
     display: flex;
     align-items: center;
-    margin-top: 5px;
+    gap: 15px;
   }
 
   .info-label {
-    width: 120px;
+    width: 110px;
     color: #dcb98a;
     font-weight: bold;
     font-size: 0.95rem;
   }
 
   .info-values {
-    display: grid;
-    grid-auto-columns: 1fr;
-    grid-auto-flow: column;
-    gap: 10px;
+    display: flex;
+    gap: 8px;
     flex: 1;
+    flex-wrap: nowrap;
     overflow-x: auto;
+    padding-bottom: 4px;
   }
 
   .info-box {
-    width: 100%;
+    flex: 1;
     min-width: 55px;
+    max-width: 80px;
     text-align: center;
     background-color: #3a3a3a;
-    padding: 6px 5px;
-    border-radius: 4px;
+    padding: 8px 4px;
+    border-radius: 6px;
     font-weight: bold;
     font-size: 0.85rem;
     box-sizing: border-box;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .chord-box:hover {
+    filter: brightness(1.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    cursor: pointer;
   }
 
   .color-select {
-    width: 100%;
+    flex: 1;
     min-width: 55px;
-    padding: 6px 0;
+    max-width: 80px;
+    padding: 0;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     box-sizing: border-box;
     text-align: center;
     font-weight: bold;
     font-size: 0.85rem;
+    height: 32px;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -137,20 +236,31 @@
     outline: 2px solid #dcb98a;
   }
 
-  .view-toggle {
+  .theory-box {
+    flex: 1;
+    min-width: 250px;
+    background-color: #1f1f1f;
+    border-left: 4px solid #dcb98a;
+    padding: 1rem 1.2rem;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
     display: flex;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-    background: #2a2a2a;
-    padding: 10px 20px;
-    border-radius: 8px;
+    flex-direction: column;
+    justify-content: center;
   }
 
-  .view-toggle label {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  .theory-box p {
+    margin: 0 0 0.6rem 0;
+  }
+
+  .theory-box p:last-child {
+    margin-bottom: 0;
+  }
+
+  .theory-highlight {
+    color: #dcb98a;
+    font-weight: bold;
   }
 
   #boards-container {
@@ -158,7 +268,22 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3rem;
+    gap: 3.5rem;
+    transition: transform 0.3s ease;
+  }
+
+  .lefty-mode-active .fretboard {
+    transform: scaleX(-1);
+  }
+
+  .lefty-mode-active .fretboard .note-marker,
+  .lefty-mode-active .fretboard .tuning-label,
+  .lefty-mode-active .fretboard .fret-number {
+    transform: scaleX(-1);
+  }
+
+  .lefty-mode-active .fretboard .note-marker:hover {
+    transform: scaleX(-1) scale(1.15);
   }
 
   .fretboard-wrapper {
@@ -168,10 +293,34 @@
     align-items: center;
   }
 
+  .board-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 1rem;
+    padding: 0 2rem;
+    box-sizing: border-box;
+  }
+
   .position-title {
     color: #dcb98a;
-    margin-bottom: 1rem;
+    margin: 0;
     font-size: 1.2rem;
+  }
+
+  .play-pos-btn {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+    background-color: #2a2a2a;
+    color: #dcb98a;
+    border: 1px solid #dcb98a;
+  }
+
+  .play-pos-btn:hover {
+    background-color: #dcb98a;
+    color: #1a1a1a;
   }
 
   .fretboard-container {
@@ -187,19 +336,21 @@
     display: grid;
     background-color: #3a2a1a;
     border: 2px solid #8b5a2b;
-    border-radius: 4px;
-    padding: 10px 20px 10px 0;
+    border-radius: 6px;
+    padding: 12px 20px 12px 0;
     box-sizing: border-box;
+    transition: transform 0.3s ease;
   }
 
   .fret-number {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    padding-bottom: 8px;
+    padding-bottom: 10px;
     color: #dcb98a;
     font-size: 14px;
     font-weight: bold;
+    transition: transform 0.3s ease;
   }
 
   .tuning-label {
@@ -209,7 +360,8 @@
     color: #fff;
     font-weight: bold;
     font-size: 16px;
-    padding-right: 5px;
+    padding-right: 8px;
+    transition: transform 0.3s ease;
   }
 
   .string-cell {
@@ -218,7 +370,7 @@
     align-items: center;
     justify-content: center;
     border-right: 3px solid silver;
-    height: 40px;
+    height: 42px;
   }
 
   .string-cell.nut {
@@ -226,20 +378,24 @@
     background-color: #2a1a0a;
   }
 
+  .string-cell.marked {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
   .string-line {
     position: absolute;
     left: 0;
     right: 0;
-    background-color: #a0a0a0;
     z-index: 1;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.5);
   }
 
-  .row-0 .string-line { height: 1px; }
-  .row-1 .string-line { height: 1.5px; }
-  .row-2 .string-line { height: 2px; }
-  .row-3 .string-line { height: 2.5px; }
-  .row-4 .string-line { height: 3px; }
-  .row-5 .string-line { height: 3.5px; }
+  .row-0 .string-line { height: 1px; background: linear-gradient(to bottom, #d5d5d5 0%, #8a8a8a 40%, #505050 100%); }
+  .row-1 .string-line { height: 1.5px; background: linear-gradient(to bottom, #d5d5d5 0%, #8a8a8a 40%, #505050 100%); }
+  .row-2 .string-line { height: 2px; background: linear-gradient(to bottom, #d5d5d5 0%, #8a8a8a 40%, #505050 100%); }
+  .row-3 .string-line { height: 2.8px; background: linear-gradient(to bottom, #c0c0c0, #606060, #303030); }
+  .row-4 .string-line { height: 3.6px; background: linear-gradient(to bottom, #c0c0c0, #606060, #303030); }
+  .row-5 .string-line { height: 4.5px; background: linear-gradient(to bottom, #c0c0c0, #606060, #303030); }
 
   .note-marker {
     width: 26px;
@@ -252,106 +408,277 @@
     align-items: center;
     justify-content: center;
     z-index: 2;
-    visibility: hidden;
+    opacity: 0;
+    transform: scale(0.5);
+    pointer-events: none;
     box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+
+  .note-marker:hover {
+    transform: scale(1.15);
   }
 
   .active .note-marker {
-    visibility: visible;
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  .active .note-marker:hover {
+    transform: scale(1.15);
   }
 </style>
 </head>
 <body>
 
-  <h1 id="scale-title">Escala Pentatónica Menor (A)</h1>
-  
-  <div class="controls">
-    <select id="root-select"></select>
-    <select id="scale-select"></select>
-  </div>
+  <div class="dashboard">
+    <div class="toolbar">
+      <h1 id="scale-title">Escala</h1>
+      <div class="toolbar-group">
+        <select id="tuning-select"></select>
+        <select id="root-select"></select>
+        <select id="scale-select"></select>
+        <button id="play-scale-btn">▶ Reproducir Escala</button>
+      </div>
+    </div>
 
-  <div class="scale-info-panel" id="scale-info-panel"></div>
+    <div class="toolbar" id="custom-tuning-panel" style="display: none;">
+      <div class="custom-string-label">6ª <select id="str-5"></select></div>
+      <div class="custom-string-label">5ª <select id="str-4"></select></div>
+      <div class="custom-string-label">4ª <select id="str-3"></select></div>
+      <div class="custom-string-label">3ª <select id="str-2"></select></div>
+      <div class="custom-string-label">2ª <select id="str-1"></select></div>
+      <div class="custom-string-label">1ª <select id="str-0"></select></div>
+    </div>
 
-  <div class="view-toggle">
-    <label><input type="radio" name="view-mode" value="full" checked> Diapasón Completo</label>
-    <label><input type="radio" name="view-mode" value="positions"> Por Posiciones</label>
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <div class="toggle-group">
+          <label><input type="radio" name="view-mode" value="full" checked> Completo</label>
+          <label><input type="radio" name="view-mode" value="positions"> Posiciones</label>
+        </div>
+        <div class="toggle-group">
+          <label><input type="radio" name="label-mode" value="notes" checked> Notas</label>
+          <label><input type="radio" name="label-mode" value="intervals"> Intervalos</label>
+        </div>
+        <div class="toggle-group">
+          <label><input type="checkbox" id="lefty-mode"> Zurdo</label>
+        </div>
+      </div>
+      
+      <div class="toolbar-group">
+        <button id="metro-btn" class="metro-btn">🎛 Metrónomo: OFF</button>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <input type="number" id="metro-bpm" value="120" min="40" max="240" title="BPM">
+          <span style="color:#aaa; font-weight:bold; font-size:0.9rem;">BPM</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="scale-info-panel" id="scale-info-panel"></div>
   </div>
 
   <div id="boards-container"></div>
 
 <script>
-  const tuning = ['E', 'B', 'G', 'D', 'A', 'E'];
   const chromaticNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
   const intervalNames = {0: '1', 1: 'b2', 2: '2', 3: 'b3', 4: '3', 5: '4', 6: 'b5', 7: '5', 8: 'b6', 9: '6', 10: 'b7', 11: '7'};
   const frets = 24;
+  const markedFrets = [1, 3, 5, 7, 9, 12, 15, 17, 19, 21, 24];
   
+  const predefinedTunings = {
+    'standard': { name: 'Estándar (E A D G B E)', notes: ['E', 'B', 'G', 'D', 'A', 'E'], bases: [64, 59, 55, 50, 45, 40] },
+    'drop-d': { name: 'Drop D (D A D G B E)', notes: ['E', 'B', 'G', 'D', 'A', 'D'], bases: [64, 59, 55, 50, 45, 38] },
+    'half-down': { name: '1/2 Tono Abajo', notes: ['D#', 'A#', 'F#', 'C#', 'G#', 'D#'], bases: [63, 58, 54, 49, 44, 39] },
+    'open-g': { name: 'Open G (D G D G B D)', notes: ['D', 'B', 'G', 'D', 'G', 'D'], bases: [62, 59, 55, 50, 43, 38] },
+    'dadgad': { name: 'DADGAD', notes: ['D', 'A', 'G', 'D', 'A', 'D'], bases: [62, 57, 55, 50, 45, 38] },
+    'custom': { name: 'Personalizada...', notes: ['E', 'B', 'G', 'D', 'A', 'E'], bases: [64, 59, 55, 50, 45, 40] }
+  };
+
+  let currentTuning = [...predefinedTunings['standard'].notes];
+  let currentBases = [...predefinedTunings['standard'].bases];
+
+  let audioCtx;
+  let metroInterval;
+  let isMetroPlaying = false;
+
+  const chordIntervalMappings = {
+    'Maj': [0, 4, 7], 'm': [0, 3, 7], 'dim': [0, 3, 6], 'aug': [0, 4, 8], '5': [0, 7],
+    'Maj7': [0, 4, 7, 11], 'm7': [0, 3, 7, 10], '7': [0, 4, 7, 10], 'm7b5': [0, 3, 6, 10],
+    'dim7': [0, 3, 6, 9], 'mMaj7': [0, 3, 7, 11], 'Maj7#5': [0, 4, 8, 11], '7#5': [0, 4, 8, 10],
+    '7b5': [0, 4, 6, 10], 'mMaj7b5': [0, 3, 6, 11], 'mMaj7#5': [0, 3, 8, 11], 'Maj7b5': [0, 4, 6, 11],
+    'Maj7#3': [0, 5, 7, 11]
+  };
+
   const scales = {
-    'ionian': { name: 'Jónica (Mayor)', intervals: [0, 2, 4, 5, 7, 9, 11], triads: ['Maj', 'm', 'm', 'Maj', 'Maj', 'm', 'dim'], tetrads: ['Maj7', 'm7', 'm7', 'Maj7', '7', 'm7', 'm7b5'] },
-    'dorian': { name: 'Dórica', intervals: [0, 2, 3, 5, 7, 9, 10], triads: ['m', 'm', 'Maj', 'Maj', 'm', 'dim', 'Maj'], tetrads: ['m7', 'm7', 'Maj7', '7', 'm7', 'm7b5', 'Maj7'] },
-    'phrygian': { name: 'Frigia', intervals: [0, 1, 3, 5, 7, 8, 10], triads: ['m', 'Maj', 'Maj', 'm', 'dim', 'Maj', 'm'], tetrads: ['m7', 'Maj7', '7', 'm7', 'm7b5', 'Maj7', 'm7'] },
-    'lydian': { name: 'Lidia', intervals: [0, 2, 4, 6, 7, 9, 11], triads: ['Maj', 'Maj', 'm', 'dim', 'Maj', 'm', 'm'], tetrads: ['Maj7', '7', 'm7', 'm7b5', 'Maj7', 'm7', 'm7'] },
-    'mixolydian': { name: 'Mixolidia', intervals: [0, 2, 4, 5, 7, 9, 10], triads: ['Maj', 'm', 'dim', 'Maj', 'm', 'm', 'Maj'], tetrads: ['7', 'm7', 'm7b5', 'Maj7', 'm7', 'm7', 'Maj7'] },
-    'aeolian': { name: 'Eólica (Menor)', intervals: [0, 2, 3, 5, 7, 8, 10], triads: ['m', 'dim', 'Maj', 'm', 'm', 'Maj', 'Maj'], tetrads: ['m7', 'm7b5', 'Maj7', 'm7', 'm7', 'Maj7', '7'] },
-    'locrian': { name: 'Locria', intervals: [0, 1, 3, 5, 6, 8, 10], triads: ['dim', 'Maj', 'm', 'm', 'Maj', 'Maj', 'm'], tetrads: ['m7b5', 'Maj7', 'm7', 'm7', 'Maj7', '7', 'm7'] },
-    'blues': { name: 'Blues', intervals: [0, 3, 5, 6, 7, 10], triads: ['m', 'Maj', 'm', 'dim', 'm', 'Maj'], tetrads: ['m7', 'Maj7', 'm7', 'dim7', 'm7', '7'] },
-    'pentatonic-minor': { name: 'Pentatónica Menor', intervals: [0, 3, 5, 7, 10], triads: ['m', 'Maj', 'm', 'm', 'Maj'], tetrads: ['m7', 'Maj7', 'm7', 'm7', '7'] },
-    'pentatonic-major': { name: 'Pentatónica Mayor', intervals: [0, 2, 4, 7, 9], triads: ['Maj', 'm', 'm', '5', 'm'], tetrads: ['Maj7', 'm7', 'm7', '7', 'm7'] },
-    'harmonic-minor': { name: 'Menor Armónica', intervals: [0, 2, 3, 5, 7, 8, 11], triads: ['m', 'dim', 'aug', 'm', 'Maj', 'Maj', 'dim'], tetrads: ['mMaj7', 'm7b5', 'Maj7#5', 'm7', '7', 'Maj7', 'dim7'] },
-    'harmonic-major': { name: 'Mayor Armónica', intervals: [0, 2, 4, 5, 7, 8, 11], triads: ['Maj', 'dim', 'm', 'm', 'Maj', 'aug', 'dim'], tetrads: ['Maj7', 'm7b5', 'm7', 'mMaj7', '7', 'Maj7#5', 'dim7'] },
-    'melodic-minor': { name: 'Menor Melódica', intervals: [0, 2, 3, 5, 7, 9, 11], triads: ['m', 'm', 'aug', 'Maj', 'Maj', 'dim', 'dim'], tetrads: ['mMaj7', 'm7', 'Maj7#5', '7', '7', 'm7b5', 'm7b5'] },
-    'double-harmonic': { name: 'Doble Armónica', intervals: [0, 1, 4, 5, 7, 8, 11], triads: ['Maj', 'Maj', 'm', 'm', 'dim', 'aug', 'm'], tetrads: ['Maj7', 'Maj7', 'm7', 'mMaj7', '7b5', 'Maj7#5', 'm7'] },
-    'hungarian': { name: 'Húngara', intervals: [0, 2, 3, 6, 7, 8, 11], triads: ['m', 'dim', 'm', 'm', 'm', 'aug', 'Maj'], tetrads: ['7', 'dim7', 'mMaj7b5', 'm7b5', 'mMaj7#5', 'm7', 'Maj7#5'] },
-    'persian': { name: 'Persa', intervals: [0, 1, 4, 5, 6, 8, 11], triads: ['dim', 'm', 'm', 'm', 'Maj', 'aug', 'dim'], tetrads: ['Maj7b5', 'Maj7', 'm', 'mMaj7', 'Maj7#3', 'Maj7#5', 'dim7'] },
-    'neopolitan': { name: 'Napolitana', intervals: [0, 1, 3, 5, 7, 9, 11], triads: ['m', 'Maj', 'aug', 'Maj', 'Maj', 'dim', 'dim'], tetrads: ['mMaj7', 'Maj7#5', 'Maj7#5', 'Maj7', '7b5', 'm7b5', 'dim7'] },
-    'neopolitan-minor': { name: 'Menor Napolitana', intervals: [0, 1, 3, 5, 7, 8, 11], triads: ['m', 'Maj', 'aug', 'm', 'Maj', 'Maj', 'dim'], tetrads: ['mMaj7', 'Maj7', '7#5', 'm7b5', '7b5', 'Maj7', 'dim7'] },
-    'diminished': { name: 'Disminuida', intervals: [0, 2, 3, 5, 6, 8, 9, 11], triads: ['dim', 'dim', 'dim', 'dim', 'dim', 'dim', 'dim', 'dim'], tetrads: ['dim7', 'dim7', 'dim7', 'dim7', 'dim7', 'dim7', 'dim7', 'dim7'] },
-    'augmented': { name: 'Aumentada', intervals: [0, 3, 4, 7, 8, 11], triads: ['aug', 'aug', 'aug', 'aug', 'aug', 'aug'], tetrads: ['Maj7#5', 'Maj7#5', 'Maj7#5', 'Maj7#5', 'Maj7#5', 'Maj7#5'] },
-    'm7-arpeggio': { name: 'Arpegio M7', intervals: [0, 4, 7, 11], triads: ['Maj', 'm', 'm', 'dim'], tetrads: ['Maj7', 'm7', '7', 'm7b5'] },
-    'min7-arpeggio': { name: 'Arpegio m7', intervals: [0, 3, 7, 10], triads: ['m', 'Maj', 'm', 'Maj'], tetrads: ['m7', 'Maj7', 'm7', '7'] },
-    'dom7-arpeggio': { name: 'Arpegio Dominante', intervals: [0, 4, 7, 10], triads: ['Maj', 'dim', 'm', 'Maj'], tetrads: ['7', 'dim7', 'm7', 'Maj7'] },
-    'major-triad': { name: 'Tríada Mayor', intervals: [0, 4, 7], triads: ['Maj', 'm', 'm'], tetrads: ['Maj7', 'm7', '7'] },
-    'minor-triad': { name: 'Tríada Menor', intervals: [0, 3, 7], triads: ['m', 'Maj', 'm'], tetrads: ['m7', 'Maj7', 'm7'] },
-    'hirajoshi': { name: 'Hirajōshi (6th)', intervals: [0, 2, 3, 7, 8], triads: ['m', 'dim', 'Maj', 'm', 'Maj'], tetrads: ['m7', 'm7b5', 'Maj7', 'm7', 'Maj7'] },
-    'iwato': { name: 'Iwato (7th)', intervals: [0, 1, 5, 6, 10], triads: ['dim', 'Maj', 'm', 'm', 'Maj'], tetrads: ['m7b5', 'Maj7', 'm7', 'm7', 'Maj7'] },
-    'kumoi': { name: 'Kumoi (1st)', intervals: [0, 2, 3, 7, 9], triads: ['m', 'm', 'Maj', 'm', 'dim'], tetrads: ['m7', 'm7', 'Maj7', 'm7', 'm7b5'] },
-    'hon-kumoi': { name: 'Hon Kumoi-joshi', intervals: [0, 1, 5, 7, 8], triads: ['m', 'Maj', 'Maj', 'm', 'dim'], tetrads: ['m7', 'Maj7', '7', 'm7', 'm7b5'] },
-    'chinese': { name: 'China (4th)', intervals: [0, 4, 6, 7, 11], triads: ['Maj', 'dim', 'm', 'm', 'Maj'], tetrads: ['Maj7', 'm7b5', 'm7', 'm7', 'Maj7'] }
+    'ionian': { name: 'Jónica (Mayor)', intervals: [0, 2, 4, 5, 7, 9, 11], triads: ['Maj', 'm', 'm', 'Maj', 'Maj', 'm', 'dim'], tetrads: ['Maj7', 'm7', 'm7', 'Maj7', '7', 'm7', 'm7b5'], desc: 'Escala mayor natural. Sonido alegre, brillante y resolutivo. Es la base de la música occidental.', target: '3, 7', chords: 'Maj, Maj7' },
+    'dorian': { name: 'Dórica', intervals: [0, 2, 3, 5, 7, 9, 10], triads: ['m', 'm', 'Maj', 'Maj', 'm', 'dim', 'Maj'], tetrads: ['m7', 'm7', 'Maj7', '7', 'm7', 'm7b5', 'Maj7'], desc: 'Escala menor con una 6 mayor. Sonido melancólico pero con un toque flotante y brillante. Clásica en Jazz, Funk y Blues rock (ej. Santana).', target: 'b3, 6', chords: 'm, m7' },
+    'phrygian': { name: 'Frigia', intervals: [0, 1, 3, 5, 7, 8, 10], triads: ['m', 'Maj', 'Maj', 'm', 'dim', 'Maj', 'm'], tetrads: ['m7', 'Maj7', '7', 'm7', 'm7b5', 'Maj7', 'm7'], desc: 'Sonido oscuro, exótico y con mucha tensión debido a su b2. Es la escala característica del flamenco y muy usada en Metal.', target: 'b2, b3', chords: 'm, m7 (o acordes dominantes alterados)' },
+    'lydian': { name: 'Lidia', intervals: [0, 2, 4, 6, 7, 9, 11], triads: ['Maj', 'Maj', 'm', 'dim', 'Maj', 'm', 'm'], tetrads: ['Maj7', '7', 'm7', 'm7b5', 'Maj7', 'm7', 'm7'], desc: 'Escala mayor con la 4 aumentada. Sonido misterioso, espacial, onírico y muy abierto. Común en música de cine y guitarristas virtuosos.', target: '#4, 7', chords: 'Maj, Maj7, Maj7#11' },
+    'mixolydian': { name: 'Mixolidia', intervals: [0, 2, 4, 5, 7, 9, 11-1], triads: ['Maj', 'm', 'dim', 'Maj', 'm', 'm', 'Maj'], tetrads: ['7', 'm7', 'm7b5', 'Maj7', 'm7', 'm7', 'Maj7'], desc: 'Escala mayor con la 7 menor. Alegre pero con una tensión característica. Es la escala por excelencia del Blues, Classic Rock y Funk.', target: '3, b7', chords: '7, 9, 13 (Dominantes)' },
+    'mixolydian': { name: 'Mixolidia', intervals: [0, 2, 4, 5, 7, 9, 10], triads: ['Maj', 'm', 'dim', 'Maj', 'm', 'm', 'Maj'], tetrads: ['7', 'm7', 'm7b5', 'Maj7', 'm7', 'm7', 'Maj7'], desc: 'Escala mayor con la 7 menor. Alegre pero con una tensión característica. Es la escala por excelencia del Blues, Classic Rock y Funk.', target: '3, b7', chords: '7, 9, 13 (Dominantes)' },
+    'aeolian': { name: 'Eólica (Menor)', intervals: [0, 2, 3, 5, 7, 8, 10], triads: ['m', 'dim', 'Maj', 'm', 'm', 'Maj', 'Maj'], tetrads: ['m7', 'm7b5', 'Maj7', 'm7', 'm7', 'Maj7', '7'], desc: 'La escala menor natural. Sonido triste, melancólico o épico. La más utilizada para progresiones menores en pop, rock y metal.', target: 'b3, b6', chords: 'm, m7' },
+    'locrian': { name: 'Locria', intervals: [0, 1, 3, 5, 6, 8, 10], triads: ['dim', 'Maj', 'm', 'm', 'Maj', 'Maj', 'm'], tetrads: ['m7b5', 'Maj7', 'm7', 'm7', 'Maj7', '7', 'm7'], desc: 'El modo más inestable y disonante debido a que no tiene 5 justa. Se usa mayormente en Jazz y pasajes muy tensos de Metal.', target: 'b2, b5', chords: 'dim, m7b5 (Semidisminuidos)' },
+    'blues': { name: 'Blues', intervals: [0, 3, 5, 6, 7, 10], triads: ['m', 'Maj', 'm', 'dim', 'm', 'Maj'], tetrads: ['m7', 'Maj7', 'm7', 'dim7', 'm7', '7'], desc: 'La escala pentatónica menor a la que se le añade la "Blue Note" (la b5). Aporta el característico sonido arrastrado, vocal y sucio del blues.', target: 'b3, b5, b7', chords: 'Dominantes (7) en rueda de Blues, o m7' },
+    'pentatonic-minor': { name: 'Pentatónica Menor', intervals: [0, 3, 5, 7, 10], triads: ['m', 'Maj', 'm', 'm', 'Maj'], tetrads: ['m7', 'Maj7', 'm7', 'm7', '7'], desc: 'La escala más popular de la guitarra moderna. Cinco notas sin semitonos que la hacen facilísima para improvisar de forma melódica y agresiva.', target: '1, b3, 5', chords: 'm, m7, o acordes 7 en Blues/Rock' },
+    'pentatonic-major': { name: 'Pentatónica Mayor', intervals: [0, 2, 4, 7, 9], triads: ['Maj', 'm', 'm', '5', 'm'], tetrads: ['Maj7', 'm7', 'm7', '7', 'm7'], desc: 'Versión brillante de cinco notas. Sonido campestre, alegre y dulce. Es el pilar del Country, Southern Rock y líneas melódicas Pop.', target: '1, 3, 5', chords: 'Maj, Maj7' },
+    'harmonic-minor': { name: 'Menor Armónica', intervals: [0, 2, 3, 5, 7, 8, 11], triads: ['m', 'dim', 'aug', 'm', 'Maj', 'Maj', 'dim'], tetrads: ['mMaj7', 'm7b5', 'Maj7#5', 'm7', '7', 'Maj7', 'dim7'], desc: 'Una escala menor natural a la que se le sube la 7 para generar una fuerte tensión hacia la tónica. Sonido clásico, barroco y del medio oriente.', target: 'b6, 7 (sensible)', chords: 'm, mMaj7, y dominante 7 (V grado)' },
+    'harmonic-major': { name: 'Mayor Armónica', intervals: [0, 2, 4, 5, 7, 8, 11], triads: ['Maj', 'dim', 'm', 'm', 'Maj', 'aug', 'dim'], tetrads: ['Maj7', 'm7b5', 'm7', 'mMaj7', '7', 'Maj7#5', 'dim7'], desc: 'Una escala rara y exótica que combina la alegría de la tercera mayor con la oscuridad de la sexta menor.', target: '3, b6', chords: 'Maj, Maj7' },
+    'melodic-minor': { name: 'Menor Melódica', intervals: [0, 2, 3, 5, 7, 9, 11], triads: ['m', 'm', 'aug', 'Maj', 'Maj', 'dim', 'dim'], tetrads: ['mMaj7', 'm7', 'Maj7#5', '7', '7', 'm7b5', 'm7b5'], desc: 'Escala menor natural con la 6 y 7 mayores. Muy fluida y resolutiva, usada extensamente en Jazz contemporáneo para tocar sobre acordes alterados.', target: '6, 7', chords: 'mMaj7, m6' },
+    'double-harmonic': { name: 'Doble Armónica', intervals: [0, 1, 4, 5, 7, 8, 11], triads: ['Maj', 'Maj', 'm', 'm', 'dim', 'aug', 'm'], tetrads: ['Maj7', 'Maj7', 'm7', 'mMaj7', '7b5', 'Maj7#5', 'm7'], desc: 'Escala de sonido Bizantino o Árabe. Cuenta con dos segundas aumentadas en su estructura, haciéndola extremadamente oriental y exótica.', target: 'b2, 7', chords: 'Maj, Maj7' },
+    'hungarian': { name: 'Húngara', intervals: [0, 2, 3, 6, 7, 8, 11], triads: ['m', 'dim', 'm', 'm', 'm', 'aug', 'Maj'], tetrads: ['7', 'dim7', 'mMaj7b5', 'm7b5', 'mMaj7#5', 'm7', 'Maj7#5'], desc: 'Escala menor gitana. Es esencialmente la menor armónica pero con la cuarta aumentada (#4). Sonido folk de Europa del este y metal neoclásico.', target: '#4, 7', chords: 'm, mMaj7' },
+    'persian': { name: 'Persa', intervals: [0, 1, 4, 5, 6, 8, 11], triads: ['dim', 'm', 'm', 'm', 'Maj', 'aug', 'dim'], tetrads: ['Maj7b5', 'Maj7', 'm', 'mMaj7', 'Maj7#3', 'Maj7#5', 'dim7'], desc: 'Sonido muy tenso y rico en semitonos. Evoca fuertemente las melodías del Medio Oriente, cargada de misterio y disonancia.', target: 'b2, 3, b6', chords: 'Dim, Maj7b5' },
+    'neopolitan': { name: 'Napolitana', intervals: [0, 1, 3, 5, 7, 9, 11], triads: ['m', 'Maj', 'aug', 'Maj', 'Maj', 'dim', 'dim'], tetrads: ['mMaj7', 'Maj7#5', 'Maj7#5', 'Maj7', '7b5', 'm7b5', 'dim7'], desc: 'Combina el inicio disonante de la escala Frigia (b2) con la brillantez resolutiva de la escala Mayor (7).', target: 'b2, 7', chords: 'm, mMaj7' },
+    'neopolitan-minor': { name: 'Menor Napolitana', intervals: [0, 1, 3, 5, 7, 8, 11], triads: ['m', 'Maj', 'aug', 'm', 'Maj', 'Maj', 'dim'], tetrads: ['mMaj7', 'Maj7', '7#5', 'm7b5', '7b5', 'Maj7', 'dim7'], desc: 'Similar a la menor armónica pero con el añadido oscuro de una segunda bemol (b2). Sonido gótico y muy dramático.', target: 'b2, b6', chords: 'm, mMaj7' },
+    'diminished': { name: 'Disminuida', intervals: [0, 2, 3, 5, 6, 8, 9, 11], triads: ['dim', 'dim', 'dim', 'dim', 'dim', 'dim', 'dim', 'dim'], tetrads: ['dim7', 'dim7', 'dim7', 'dim7', 'dim7', 'dim7', 'dim7', 'dim7'], desc: 'Escala octatónica y simétrica que alterna Tono-Semitono. Genera una tensión constante e infinita, ideal para Jazz y Metal Extremo.', target: 'b5, bb7', chords: 'dim7' },
+    'augmented': { name: 'Aumentada', intervals: [0, 3, 4, 7, 8, 11], triads: ['aug', 'aug', 'aug', 'aug', 'aug', 'aug'], tetrads: ['Maj7#5', 'Maj7#5', 'Maj7#5', 'Maj7#5', 'Maj7#5', 'Maj7#5'], desc: 'Escala hexátona formada por la superposición de tonos enteros. Evoca un sentimiento irreal de flotabilidad y ensoñación.', target: '#5', chords: 'aug, 7#5' },
+    'm7-arpeggio': { name: 'Arpegio M7', intervals: [0, 4, 7, 11], triads: ['Maj', 'm', 'm', 'dim'], tetrads: ['Maj7', 'm7', '7', 'm7b5'], desc: 'Las 4 notas estructurales de un acorde Mayor con 7ª Mayor. Sonido dulce, jazzístico y perfecto para barridos en progresiones mayores.', target: '3, 7', chords: 'Maj7' },
+    'min7-arpeggio': { name: 'Arpegio m7', intervals: [0, 3, 7, 10], triads: ['m', 'Maj', 'm', 'Maj'], tetrads: ['m7', 'Maj7', 'm7', '7'], desc: 'Las 4 notas estructurales de un acorde menor con 7ª. Imprescindible para sweep picking sobre progresiones menores.', target: 'b3, b7', chords: 'm7' },
+    'dom7-arpeggio': { name: 'Arpegio Dominante', intervals: [0, 4, 7, 10], triads: ['Maj', 'dim', 'm', 'Maj'], tetrads: ['7', 'dim7', 'm7', 'Maj7'], desc: 'Arpegio del acorde dominante. Su intervalo inestable de tritono crea la necesidad obligada de resolver al grado principal (I).', target: '3, b7', chords: '7' },
+    'major-triad': { name: 'Tríada Mayor', intervals: [0, 4, 7], triads: ['Maj', 'm', 'm'], tetrads: ['Maj7', 'm7', '7'], desc: 'El acorde mayor básico tocado de forma lineal. Fuerte, brillante y estático.', target: '1, 3, 5', chords: 'Maj' },
+    'minor-triad': { name: 'Tríada Menor', intervals: [0, 3, 7], triads: ['m', 'Maj', 'm'], tetrads: ['m7', 'Maj7', 'm7'], desc: 'El acorde menor básico tocado de forma lineal. Oscuro y triste.', target: '1, b3, 5', chords: 'm' },
+    'hirajoshi': { name: 'Hirajōshi (6th)', intervals: [0, 2, 3, 7, 8], triads: ['m', 'dim', 'Maj', 'm', 'Maj'], tetrads: ['m7', 'm7b5', 'Maj7', 'm7', 'Maj7'], desc: 'Escala pentatónica tradicional de Japón derivada de la afinación del Koto. Sonido melancólico y épico.', target: '2, b6', chords: 'm, m7' },
+    'iwato': { name: 'Iwato (7th)', intervals: [0, 1, 5, 6, 10], triads: ['dim', 'Maj', 'm', 'm', 'Maj'], tetrads: ['m7b5', 'Maj7', 'm7', 'm7', 'Maj7'], desc: 'Escala pentatónica oriental extremadamente disonante y oscura, similar a un modo Locrio sin tercera.', target: 'b2, b5', chords: 'dim' },
+    'kumoi': { name: 'Kumoi (1st)', intervals: [0, 2, 3, 7, 9], triads: ['m', 'm', 'Maj', 'm', 'dim'], tetrads: ['m7', 'm7', 'Maj7', 'm7', 'm7b5'], desc: 'Variante pentatónica japonesa (Sakura). Ofrece un tono ceremonial, antiguo e introspectivo.', target: '2, 6', chords: 'm, m6' },
+    'hon-kumoi': { name: 'Hon Kumoi-joshi', intervals: [0, 1, 5, 7, 8], triads: ['m', 'Maj', 'Maj', 'm', 'dim'], tetrads: ['m7', 'Maj7', '7', 'm7', 'm7b5'], desc: 'Escala tradicional basada en saltos interválicos muy dramáticos. Sonido profundo y reflexivo.', target: 'b2, 5', chords: 'm' },
+    'chinese': { name: 'China (4th)', intervals: [0, 4, 6, 7, 11], triads: ['Maj', 'dim', 'm', 'm', 'Maj'], tetrads: ['Maj7', 'm7b5', 'm7', 'm7', 'Maj7'], desc: 'Basada en afinaciones orientales tradicionales. Su estructura evita las terceras y sextas menores, creando un sonido luminoso y etéreo.', target: '3, 5', chords: 'Maj, Maj7' }
   };
 
   const predefinedColors = {
-    '#7f8c8d': 'Gris',
-    '#e74c3c': 'Rojo',
-    '#3498db': 'Azul',
-    '#2ecc71': 'Verde',
-    '#f1c40f': 'Amarillo',
-    '#9b59b6': 'Morado',
-    '#e67e22': 'Naranja',
-    '#e84393': 'Rosa'
+    '#7f8c8d': 'Gris', '#e74c3c': 'Rojo', '#3498db': 'Azul', '#2ecc71': 'Verde',
+    '#f1c40f': 'Amarillo', '#9b59b6': 'Morado', '#e67e22': 'Naranja', '#e84393': 'Rosa'
   };
 
-  const defaultIntervalColors = {
-    0: '#e74c3c',
-    3: '#3498db',
-    4: '#3498db',
-    7: '#f1c40f'
-  };
+  const defaultIntervalColors = { 0: '#e74c3c', 3: '#3498db', 4: '#3498db', 7: '#f1c40f' };
   
   let userColors = {};
 
+  const tuningSelect = document.getElementById('tuning-select');
   const rootSelect = document.getElementById('root-select');
   const scaleSelect = document.getElementById('scale-select');
+  const playScaleBtn = document.getElementById('play-scale-btn');
   const boardsContainer = document.getElementById('boards-container');
   const scaleTitle = document.getElementById('scale-title');
   const scaleInfoPanel = document.getElementById('scale-info-panel');
   const viewRadios = document.querySelectorAll('input[name="view-mode"]');
+  const labelRadios = document.querySelectorAll('input[name="label-mode"]');
+  const leftyCheckbox = document.getElementById('lefty-mode');
+  const customTuningPanel = document.getElementById('custom-tuning-panel');
+  
+  const metroBtn = document.getElementById('metro-btn');
+  const metroBpm = document.getElementById('metro-bpm');
+
+  function initAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  }
+
+  function playFreq(freq, startTime, duration, vol = 0.2) {
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    
+    gainNode.gain.setValueAtTime(0, startTime);
+    gainNode.gain.linearRampToValueAtTime(vol, startTime + 0.05);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+    
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc.start(startTime);
+    osc.stop(startTime + duration);
+  }
+
+  function getNoteFrequency(noteName, octave) {
+    const noteIndex = chromaticNotes.indexOf(noteName);
+    const midiNote = (octave + 1) * 12 + noteIndex;
+    return 440 * Math.pow(2, (midiNote - 69) / 12);
+  }
+
+  function playChord(rootNote, chordType) {
+    initAudio();
+    let intervals = chordIntervalMappings[chordType];
+    if (!intervals) return;
+    
+    let rootIdx = chromaticNotes.indexOf(rootNote);
+    let currentTime = audioCtx.currentTime;
+    
+    intervals.forEach(interval => {
+        let noteIdx = (rootIdx + interval) % 12;
+        let octaveOffset = Math.floor((rootIdx + interval) / 12);
+        let octave = 3 + octaveOffset;
+        let freq = getNoteFrequency(chromaticNotes[noteIdx], octave);
+        playFreq(freq, currentTime, 1.8, 0.12);
+    });
+  }
+
+  function toggleMetronome() {
+    initAudio();
+    if (isMetroPlaying) {
+      clearInterval(metroInterval);
+      isMetroPlaying = false;
+      metroBtn.textContent = '🎛 Metrónomo: OFF';
+      metroBtn.classList.remove('active');
+    } else {
+      isMetroPlaying = true;
+      metroBtn.textContent = '🎛 Metrónomo: ON';
+      metroBtn.classList.add('active');
+      let intervalMs = (60 / metroBpm.value) * 1000;
+      
+      const playClick = () => playFreq(800, audioCtx.currentTime, 0.05, 0.3);
+      playClick();
+      metroInterval = setInterval(playClick, intervalMs);
+    }
+  }
+
+  function handleCustomTuningChange() {
+    let newTuning = [];
+    let newBases = [];
+    for (let i=0; i<6; i++) {
+        let note = document.getElementById(`str-${i}`).value;
+        newTuning.push(note);
+        
+        let stdBase = predefinedTunings['standard'].bases[i];
+        let stdPitchClass = stdBase % 12;
+        let targetPitchClass = chromaticNotes.indexOf(note);
+        
+        let diff = targetPitchClass - stdPitchClass;
+        if (diff > 6) diff -= 12;
+        if (diff < -6) diff += 12;
+        
+        newBases.push(stdBase + diff);
+    }
+    currentTuning = newTuning;
+    currentBases = newBases;
+    updateAll();
+  }
 
   function initSelectors() {
+    Object.entries(predefinedTunings).forEach(([key, data]) => {
+      let option = document.createElement('option');
+      option.value = key;
+      option.textContent = data.name;
+      tuningSelect.appendChild(option);
+    });
+
     chromaticNotes.forEach(note => {
       let option = document.createElement('option');
       option.value = note;
       option.textContent = note;
       if (note === 'A') option.selected = true;
       rootSelect.appendChild(option);
+      
+      for(let i=0; i<6; i++) {
+        let strOpt = document.createElement('option');
+        strOpt.value = note;
+        strOpt.textContent = note;
+        if (note === predefinedTunings['standard'].notes[i]) strOpt.selected = true;
+        document.getElementById(`str-${i}`).appendChild(strOpt);
+      }
     });
 
     Object.entries(scales).forEach(([key, scaleData]) => {
@@ -362,9 +689,75 @@
       scaleSelect.appendChild(option);
     });
 
+    tuningSelect.addEventListener('change', (e) => {
+      const val = e.target.value;
+      if (val === 'custom') {
+        customTuningPanel.style.display = 'flex';
+        handleCustomTuningChange();
+      } else {
+        customTuningPanel.style.display = 'none';
+        currentTuning = [...predefinedTunings[val].notes];
+        currentBases = [...predefinedTunings[val].bases];
+        for(let i=0; i<6; i++) {
+          document.getElementById(`str-${i}`).value = currentTuning[i];
+        }
+        updateAll();
+      }
+    });
+
+    for(let i=0; i<6; i++) {
+      document.getElementById(`str-${i}`).addEventListener('change', handleCustomTuningChange);
+    }
+
     rootSelect.addEventListener('change', updateAll);
     scaleSelect.addEventListener('change', updateAll);
     viewRadios.forEach(radio => radio.addEventListener('change', renderBoards));
+    
+    labelRadios.forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        const mode = e.target.value;
+        document.querySelectorAll('.note-marker').forEach(marker => {
+          marker.textContent = mode === 'notes' ? marker.getAttribute('data-note') : marker.getAttribute('data-interval-name');
+        });
+      });
+    });
+
+    leftyCheckbox.addEventListener('change', (e) => {
+      if(e.target.checked) boardsContainer.classList.add('lefty-mode-active');
+      else boardsContainer.classList.remove('lefty-mode-active');
+    });
+
+    metroBtn.addEventListener('click', toggleMetronome);
+    metroBpm.addEventListener('change', () => {
+      if (isMetroPlaying) {
+        toggleMetronome(); 
+        toggleMetronome();
+      }
+    });
+
+    playScaleBtn.addEventListener('click', () => {
+      initAudio();
+      const selectedRoot = rootSelect.value;
+      const selectedScaleKey = scaleSelect.value;
+      const scaleNotes = getScaleNotes(selectedRoot, selectedScaleKey);
+      
+      let currentTime = audioCtx.currentTime;
+      let currentOctave = 3; 
+
+      scaleNotes.forEach((note, i) => {
+        let noteIdx = chromaticNotes.indexOf(note);
+        if (i > 0 && noteIdx < chromaticNotes.indexOf(scaleNotes[i-1])) currentOctave++;
+        let freq = getNoteFrequency(note, currentOctave);
+        playFreq(freq, currentTime + i * 0.35, 0.6, 0.2);
+      });
+
+      let lastNoteIdx = chromaticNotes.indexOf(scaleNotes[scaleNotes.length-1]);
+      let rootIdx = chromaticNotes.indexOf(selectedRoot);
+      if (rootIdx <= lastNoteIdx) currentOctave++;
+      
+      let finalFreq = getNoteFrequency(selectedRoot, currentOctave);
+      playFreq(finalFreq, currentTime + scaleNotes.length * 0.35, 1.2, 0.2);
+    });
   }
 
   function getIntervalColor(interval) {
@@ -379,59 +772,66 @@
   }
 
   function renderScaleInfo(root, scaleKey, scaleNotes) {
-    const intervalsData = scales[scaleKey].intervals;
+    const scaleData = scales[scaleKey];
+    const intervalsData = scaleData.intervals;
     const intervalsNames = intervalsData.map(i => intervalNames[i]);
-    
     const existingToggle = document.querySelector('input[name="chord-type"]:checked');
     const chordType = existingToggle ? existingToggle.value : 'triads';
-    
-    const chords = scales[scaleKey][chordType];
+    const chords = scaleData[chordType];
 
     let notesHtml = scaleNotes.map(n => `<div class="info-box">${n}</div>`).join('');
     let intervalsHtml = intervalsNames.map(i => `<div class="info-box" style="background-color:#2c3e50;">${i}</div>`).join('');
+    
     let chordsHtml = scaleNotes.map((n, idx) => {
-      let chordStr = chords[idx] !== undefined ? `${n}${chords[idx]}` : '-';
+      let chordVal = chords[idx];
+      let chordStr = chordVal !== undefined ? `${n}${chordVal}` : '-';
+      if (chordVal !== undefined) {
+         return `<div class="info-box chord-box" style="background-color:#8b5a2b;" data-note="${n}" data-chord="${chordVal}" title="Reproducir acorde">${chordStr}</div>`;
+      }
       return `<div class="info-box" style="background-color:#8b5a2b;">${chordStr}</div>`;
     }).join('');
     
     let colorHtml = intervalsData.map(i => {
       let currentColor = getIntervalColor(i);
-      let optionsHtml = Object.entries(predefinedColors).map(([hex, name]) => {
-        return `<option value="${hex}" ${currentColor === hex ? 'selected' : ''}>${name}</option>`;
-      }).join('');
-      
+      let optionsHtml = Object.entries(predefinedColors).map(([hex, name]) => `<option value="${hex}" ${currentColor === hex ? 'selected' : ''}>${name}</option>`).join('');
       let textColor = (currentColor === '#f1c40f' || currentColor === '#2ecc71') ? '#000' : '#fff';
       
-      return `
-        <select class="color-select" data-interval="${i}" style="background-color: ${currentColor}; color: ${textColor};">
-          ${optionsHtml}
-        </select>
-      `;
+      return `<select class="color-select" data-interval="${i}" style="background-color: ${currentColor}; color: ${textColor};">${optionsHtml}</select>`;
     }).join('');
+
+    let theoryHtml = '';
+    if (scaleData.desc) {
+      theoryHtml = `
+        <div class="theory-box">
+          <p><span class="theory-highlight">🎵 Sonido / Uso:</span> ${scaleData.desc}</p>
+          <p><span class="theory-highlight">🎯 Notas objetivo (Sabor):</span> ${scaleData.target || '-'}</p>
+          <p><span class="theory-highlight">🎸 Tocar sobre acordes:</span> ${scaleData.chords || '-'}</p>
+        </div>
+      `;
+    } else {
+      theoryHtml = `
+        <div class="theory-box">
+          <p style="color: #888;">Selecciona una escala para ver su información teórica detallada y sugerencias de acompañamiento.</p>
+        </div>
+      `;
+    }
 
     scaleInfoPanel.innerHTML = `
       <div class="info-header">
-        <div class="info-title">Detalles de la Escala</div>
+        <div class="info-title">Configuración de la Escala</div>
         <div class="toggle-group">
           <label><input type="radio" name="chord-type" value="triads" ${chordType === 'triads' ? 'checked' : ''}> Tríadas</label>
           <label><input type="radio" name="chord-type" value="tetrads" ${chordType === 'tetrads' ? 'checked' : ''}> Tétradas</label>
         </div>
       </div>
-      <div class="info-row">
-        <div class="info-label">Notas</div>
-        <div class="info-values">${notesHtml}</div>
-      </div>
-      <div class="info-row">
-        <div class="info-label">Intervalos</div>
-        <div class="info-values">${intervalsHtml}</div>
-      </div>
-      <div class="info-row">
-        <div class="info-label">Armonización</div>
-        <div class="info-values">${chordsHtml}</div>
-      </div>
-      <div class="info-row">
-        <div class="info-label">Colores</div>
-        <div class="info-values">${colorHtml}</div>
+      <div class="info-body">
+        <div class="info-grid">
+          <div class="info-row"><div class="info-label">Notas</div><div class="info-values">${notesHtml}</div></div>
+          <div class="info-row"><div class="info-label">Intervalos</div><div class="info-values">${intervalsHtml}</div></div>
+          <div class="info-row"><div class="info-label">Acordes</div><div class="info-values">${chordsHtml}</div></div>
+          <div class="info-row"><div class="info-label">Colores</div><div class="info-values">${colorHtml}</div></div>
+        </div>
+        ${theoryHtml}
       </div>
     `;
 
@@ -444,15 +844,28 @@
         const interval = parseInt(e.target.getAttribute('data-interval'));
         const newColor = e.target.value;
         userColors[interval] = newColor;
-        
         let textColor = (newColor === '#f1c40f' || newColor === '#2ecc71') ? '#000' : '#fff';
         e.target.style.backgroundColor = newColor;
         e.target.style.color = textColor;
-        
         document.querySelectorAll(`.note-marker[data-interval="${interval}"]`).forEach(marker => {
           marker.style.backgroundColor = newColor;
           marker.style.color = textColor;
         });
+      });
+    });
+
+    document.querySelectorAll('.chord-box').forEach(box => {
+      box.addEventListener('click', (e) => {
+        let note = e.target.getAttribute('data-note');
+        let chord = e.target.getAttribute('data-chord');
+        playChord(note, chord);
+        
+        e.target.style.transform = 'scale(1.1)';
+        e.target.style.boxShadow = '0 0 10px #dcb98a';
+        setTimeout(() => {
+            e.target.style.transform = '';
+            e.target.style.boxShadow = '';
+        }, 200);
       });
     });
   }
@@ -461,11 +874,55 @@
     const wrapper = document.createElement('div');
     wrapper.className = 'fretboard-wrapper';
 
+    let fretboardElement; 
+
     if (title) {
+      const headerContainer = document.createElement('div');
+      headerContainer.className = 'board-header';
+      
       const h3 = document.createElement('h3');
       h3.className = 'position-title';
       h3.textContent = title;
-      wrapper.appendChild(h3);
+      headerContainer.appendChild(h3);
+
+      if (activeNotesList) {
+        const playPosBtn = document.createElement('button');
+        playPosBtn.textContent = '▶ Reproducir Posición';
+        playPosBtn.className = 'play-pos-btn';
+        playPosBtn.addEventListener('click', () => {
+          initAudio();
+          const sortedNotes = [...activeNotesList].sort((a, b) => {
+            const pitchA = currentBases[a.string] + a.fret;
+            const pitchB = currentBases[b.string] + b.fret;
+            return pitchA - pitchB;
+          });
+
+          let currentTime = audioCtx.currentTime;
+          sortedNotes.forEach((n, i) => {
+            const pitch = currentBases[n.string] + n.fret;
+            const freq = 440 * Math.pow(2, (pitch - 69) / 12);
+            playFreq(freq, currentTime + i * 0.3, 0.5, 0.2);
+
+            setTimeout(() => {
+              if (fretboardElement) {
+                const marker = fretboardElement.querySelector(`.note-marker[data-string="${n.string}"][data-fret="${n.fret}"]`);
+                if(marker) {
+                  const originalTransform = marker.style.transform;
+                  const originalBoxShadow = marker.style.boxShadow;
+                  marker.style.transform = 'scale(1.4)';
+                  marker.style.boxShadow = '0 0 12px 2px ' + marker.style.backgroundColor;
+                  setTimeout(() => {
+                    marker.style.transform = originalTransform;
+                    marker.style.boxShadow = originalBoxShadow || '0 2px 4px rgba(0,0,0,0.5)';
+                  }, 250);
+                }
+              }
+            }, i * 300);
+          });
+        });
+        headerContainer.appendChild(playPosBtn);
+      }
+      wrapper.appendChild(headerContainer);
     }
 
     const container = document.createElement('div');
@@ -473,13 +930,13 @@
 
     const fretboard = document.createElement('div');
     fretboard.className = 'fretboard';
+    fretboardElement = fretboard;
     
     let gridCols = '40px ';
     for (let i = spanStart; i <= spanEnd; i++) {
       gridCols += (i === 0) ? '40px ' : 'minmax(45px, 1fr) ';
     }
     fretboard.style.gridTemplateColumns = gridCols;
-    
     fretboard.style.minWidth = '1200px';
     fretboard.style.width = '100%';
 
@@ -494,31 +951,40 @@
     }
 
     const rootIndexGlobal = chromaticNotes.indexOf(rootNote);
+    const labelMode = document.querySelector('input[name="label-mode"]:checked').value;
 
-    tuning.forEach((openStringNote, stringIndex) => {
+    currentTuning.forEach((openStringNote, stringIndex) => {
       let labelCell = document.createElement('div');
       labelCell.className = 'tuning-label';
       labelCell.textContent = openStringNote;
       fretboard.appendChild(labelCell);
 
       let stringRootIndex = chromaticNotes.indexOf(openStringNote);
+      let baseOctave = Math.floor(currentBases[stringIndex] / 12) - 1;
       
       for (let fret = spanStart; fret <= spanEnd; fret++) {
         let currentNote = chromaticNotes[(stringRootIndex + fret) % 12];
         let currentNoteIndex = chromaticNotes.indexOf(currentNote);
         let interval = (currentNoteIndex - rootIndexGlobal + 12) % 12;
+        let intervalNameStr = intervalNames[interval];
+        let currentOctave = baseOctave + Math.floor((stringRootIndex + fret) / 12);
         
         let cell = document.createElement('div');
         cell.className = `string-cell row-${stringIndex}`;
         if (fret === 0) cell.classList.add('nut');
+        if (markedFrets.includes(fret)) cell.classList.add('marked');
         
         let stringLine = document.createElement('div');
         stringLine.className = 'string-line';
         
         let noteMarker = document.createElement('div');
         noteMarker.className = 'note-marker';
-        noteMarker.textContent = currentNote;
+        noteMarker.setAttribute('data-note', currentNote);
+        noteMarker.setAttribute('data-interval-name', intervalNameStr);
         noteMarker.setAttribute('data-interval', interval);
+        noteMarker.setAttribute('data-string', stringIndex);
+        noteMarker.setAttribute('data-fret', fret);
+        noteMarker.textContent = labelMode === 'notes' ? currentNote : intervalNameStr;
         
         let isActive = false;
         if (activeNotesList) {
@@ -532,6 +998,20 @@
           let bgColor = getIntervalColor(interval);
           noteMarker.style.backgroundColor = bgColor;
           noteMarker.style.color = (bgColor === '#f1c40f' || bgColor === '#2ecc71') ? '#000' : '#fff';
+          
+          noteMarker.addEventListener('click', (e) => {
+            e.stopPropagation();
+            initAudio();
+            let freq = getNoteFrequency(currentNote, currentOctave);
+            playFreq(freq, audioCtx.currentTime, 0.8, 0.2);
+            
+            noteMarker.style.transform = 'scale(1.3)';
+            noteMarker.style.boxShadow = '0 0 10px 2px ' + bgColor;
+            setTimeout(() => { 
+                noteMarker.style.transform = ''; 
+                noteMarker.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
+            }, 200);
+          });
         }
         
         cell.appendChild(stringLine);
@@ -557,56 +1037,124 @@
       boardsContainer.appendChild(createFretboardDOM(selectedRoot, scaleNotes, 0, frets, null, null));
     } else {
       const N = scaleNotes.length;
-      const nps = N <= 5 ? 2 : 3;
-      const stringBases = [24, 19, 15, 10, 5, 0];
-      const eRootIndex = chromaticNotes.indexOf('E');
+      let baseLowest = currentBases[5];
+      let stringBasesInternal = currentBases.map(b => b - baseLowest);
+      let eRootIndex = chromaticNotes.indexOf(currentTuning[5]);
       
-      let positionsData = [];
-
-      for (let p = 0; p < N; p++) {
-        let activeNotes = [];
-        let startNote = scaleNotes[p];
+      if (N <= 4) {
+        let positionsData = [];
+        let scalePitches = [];
         
-        let baseFret = (chromaticNotes.indexOf(startNote) - eRootIndex + 12) % 12;
-        let currentPitch = baseFret;
+        for (let pitch = 0; pitch <= 60; pitch++) {
+          let noteName = chromaticNotes[(eRootIndex + pitch) % 12];
+          if (scaleNotes.includes(noteName)) scalePitches.push(pitch);
+        }
 
-        for (let s = 5; s >= 0; s--) {
-          let found = 0;
-          while (found < nps) {
-            let noteName = chromaticNotes[(eRootIndex + currentPitch) % 12];
-            if (scaleNotes.includes(noteName)) {
-              let fret = currentPitch - stringBases[s];
-              if (fret < 0) {
-                fret += 12;
-                currentPitch += 12;
+        for (let p = 0; p < N; p++) {
+          let activeNotes = [];
+          let startNote = scaleNotes[p];
+          let baseFret = (chromaticNotes.indexOf(startNote) - eRootIndex + 12) % 12;
+          
+          if (baseFret === 0) baseFret += 12;
+
+          let startPitch = baseFret;
+          let startIndex = scalePitches.indexOf(startPitch);
+          if (startIndex === -1) startIndex = scalePitches.indexOf(startPitch + 12);
+
+          let currentIndex = startIndex;
+          let currentString = 5;
+          let currentFret = scalePitches[currentIndex] - stringBasesInternal[5];
+          let notesOnString = 0;
+
+          while (currentIndex < scalePitches.length && currentString >= 0) {
+              let pitch = scalePitches[currentIndex];
+              let fretSame = pitch - stringBasesInternal[currentString];
+              let fretNext = currentString > 0 ? pitch - stringBasesInternal[currentString - 1] : -1;
+
+              let placeOnSame = false;
+
+              if (notesOnString === 0) {
+                   placeOnSame = true;
+              } else if (notesOnString < 2 && fretSame <= currentFret + 5) {
+                   let costSame = (fretSame - currentFret) * 1;
+                   let costNext = Infinity;
+                   if (fretNext >= 0) {
+                       if (fretNext < currentFret) {
+                           costNext = (currentFret - fretNext) * 3 + 2;
+                       } else {
+                           costNext = (fretNext - currentFret) * 1 + 2;
+                       }
+                   }
+
+                   if (costSame <= costNext) placeOnSame = true;
               }
-              activeNotes.push({string: s, fret: fret, note: noteName});
-              found++;
-            }
-            currentPitch++;
+
+              if (placeOnSame && fretSame >= 0 && fretSame <= 24) {
+                  activeNotes.push({ string: currentString, fret: fretSame, note: chromaticNotes[(eRootIndex + pitch) % 12] });
+                  currentFret = fretSame;
+                  notesOnString++;
+                  currentIndex++;
+              } else {
+                  currentString--;
+                  notesOnString = 0;
+              }
           }
+
+          let string6Note = activeNotes.find(n => n.string === 5);
+          let startFret = string6Note ? string6Note.fret : 0;
+          positionsData.push({ activeNotes: activeNotes, startFret: startFret });
         }
 
-        let string6Note = activeNotes.find(n => n.string === 5);
-        let startFret = string6Note ? string6Note.fret : 0;
+        positionsData.sort((a, b) => a.startFret - b.startFret);
+        positionsData.forEach((pos, index) => {
+          let title = `Posición ${index + 1}`;
+          boardsContainer.appendChild(createFretboardDOM(selectedRoot, scaleNotes, 0, frets, pos.activeNotes, title));
+        });
 
-        if (startFret === 0) {
-          activeNotes = activeNotes.map(n => ({...n, fret: n.fret + 12}));
-          startFret += 12;
+      } else {
+        const nps = N <= 5 ? 2 : 3;
+        let positionsData = [];
+
+        for (let p = 0; p < N; p++) {
+          let activeNotes = [];
+          let startNote = scaleNotes[p];
+          let baseFret = (chromaticNotes.indexOf(startNote) - eRootIndex + 12) % 12;
+          let currentPitch = baseFret;
+
+          for (let s = 5; s >= 0; s--) {
+            let found = 0;
+            while (found < nps) {
+              let noteName = chromaticNotes[(eRootIndex + currentPitch) % 12];
+              if (scaleNotes.includes(noteName)) {
+                let fret = currentPitch - stringBasesInternal[s];
+                if (fret < 0) {
+                  fret += 12;
+                  currentPitch += 12;
+                }
+                activeNotes.push({string: s, fret: fret, note: noteName});
+                found++;
+              }
+              currentPitch++;
+            }
+          }
+
+          let string6Note = activeNotes.find(n => n.string === 5);
+          let startFret = string6Note ? string6Note.fret : 0;
+
+          if (startFret === 0) {
+            activeNotes = activeNotes.map(n => ({...n, fret: n.fret + 12}));
+            startFret += 12;
+          }
+
+          positionsData.push({ activeNotes: activeNotes, startFret: startFret });
         }
 
-        positionsData.push({
-          activeNotes: activeNotes,
-          startFret: startFret
+        positionsData.sort((a, b) => a.startFret - b.startFret);
+        positionsData.forEach((pos, index) => {
+          let title = `Posición ${index + 1} (inicia en traste ${pos.startFret})`;
+          boardsContainer.appendChild(createFretboardDOM(selectedRoot, scaleNotes, 0, frets, pos.activeNotes, title));
         });
       }
-
-      positionsData.sort((a, b) => a.startFret - b.startFret);
-
-      positionsData.forEach((pos, index) => {
-        let title = `Posición ${index + 1} (inicia en traste ${pos.startFret})`;
-        boardsContainer.appendChild(createFretboardDOM(selectedRoot, scaleNotes, 0, frets, pos.activeNotes, title));
-      });
     }
   }
 
@@ -616,7 +1164,7 @@
     const scaleNotes = getScaleNotes(selectedRoot, selectedScaleKey);
     const scaleName = scales[selectedScaleKey].name;
     
-    scaleTitle.textContent = `Escala ${scaleName} (${selectedRoot})`;
+    scaleTitle.textContent = `${scaleName} (${selectedRoot})`;
     
     renderScaleInfo(selectedRoot, selectedScaleKey, scaleNotes);
     renderBoards();
